@@ -1,9 +1,12 @@
 const {SlashCommandBuilder} = require("@discordjs/builders");
-const {MessageEmbed, Client} = require("discord.js");
+const {MessageEmbed} = require("discord.js");
+const {client} = require("D:\\BEEMO\\src\\index.js");
+const fs = require("fs");
+const reactionRoleConfig = JSON.parse(fs.readFileSync("src\\reactionRoles.json","utf8"));
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName("self-role")
+    .setName("reaction-role")
     .setDescription("Create self-role-assign embeds")
     .addRoleOption(option => option.setName("role").setDescription("select role").setRequired(true))
     .addStringOption(option => option.setName("emote").setDescription("select emote").setRequired(true))
@@ -12,66 +15,26 @@ module.exports = {
 
         let emote = interaction.options.getString("emote");
         let role = interaction.options.getRole("role");
-        let channelId = interaction.channelId;
-        let channel = Client.channels.cache.get(channelId);
+        let roleId = role.id;
+        let channel = interaction.channel;
 
-        console.log(channelId);
-
-        channel.send('Beep')
-
-        if(role.position >= interaction.guild.me.roles.highest.position) 
+        if(role.position >= interaction.guild.me.roles.highest.position)
         return interaction.followUp("I can't assign a role that is higher or equal than me!");
-        
-        /*
-        interaction.reply({embeds: [
-            new MessageEmbed()
-            .setTitle(`React below to get <@&${role}>`)
-            .setColor(`${role.getColor}`)
-            ]
-        })
 
-        interaction.react("emote");
+        let embed = new MessageEmbed()
+            .setTitle("Reaction Role")
+            .setDescription(`React with ${emote} to get <@&${roleId}>`);
 
-        interaction.reply.react(emote);
-        */
+        let reply = channel.send({ embeds: [embed] }).then(embedMessage => {
+            embedMessage.react(emote);
+        });
+
+        let data = {message: reply.id, emote: emote, roleId: roleId};
+        reactionRoleConfig.reactions.push(data);
+
+        fs.writeFileSync("src\\reactionRoles.json", JSON.stringify(reactionRoleConfig));
     }
 }
-
-
-/*
-const reactionRoleConfig = JSON.parse(fs.readFileSync("src\\reactionRoles.json","utf8"));
-
-client.on("message", async (msg) => {
-    if(msg.author.bot || !msg.guild) return;
-    if(msg.content.startsWith("~reactionRole")){
-        let args = msg.content.split(" ");
-        if(args.length == 3){
-            let emote = args[2];
-            let roleId = args[1];
-            let role = msg.guild.roles.cache.get(roleId);
-
-            if(!role){
-                msg.reply("Invalid role ID!");
-                return;
-            }
-
-            let embed = new Discord.MessageEmbed()
-            .setTitle("Reaction Role")
-            .setDescription(`Click ${emote} to get <@&${roleId}>`)
-            .setColor(`${role.color}`);
-
-            let reply = await msg.channel.send(embed);
-            reply.react(emote);
-
-            msg.remove;
-
-            let data = {message: reply.id, emote: emote, roleId: roleId};
-            reactionRoleConfig.reactions.push(data);
-
-            fs.writeFileSync("src\\reactionRoles.json", JSON.stringify(reactionRoleConfig));
-        }
-    }
-});
 
 client.on("messageReactionAdd", (reaction, user) => {
     if(reaction.message.partial) reaction.fetch();
@@ -94,9 +57,9 @@ client.on("messageReactionRemove", (reaction, user) => {
 
     for(let i = 0; i < reactionRoleConfig.reactions.length; i++) {
         let reactionRole = reactionRoleConfig.reactions[i];
+
         if(reaction.message.id == reactionRole.message && reaction.emoji.name == reactionRole.emote) {
             reaction.message.guild.members.cache.get(user.id).roles.remove(reactionRole.role);
         }
     }
 });
-*/
