@@ -5,7 +5,6 @@ const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES], 
     partials: ['MESSAGE', 'CHANNEL', 'REACTION']});
 client.commands = new Collection();
-const reactionRoleConfig = JSON.parse(fs.readFileSync("src\\reactionRoles.json","utf8"));
 
 const commandFiles = fs.readdirSync("./src/commands").filter(file => file.endsWith(".js"));
 
@@ -17,21 +16,19 @@ commandFiles.forEach(commandFile => {
 client.on('messageDelete', (message) => {
 
     let data = {reactions: []};
+    let reactionRoleConfig = JSON.parse(fs.readFileSync("src\\reactionRoles.json","utf8"));
     let reactions = reactionRoleConfig.reactions;
 
     if(reactions !== undefined){
         reactions.forEach(function(item, index, object) {
 
-            console.log(JSON.stringify(item.message) + " !== " + message.id);
             if (item.message == message.id) {
                 object.splice(index, 1);
-                console.log("spliced");
             }
         });
 
         data.reactions = reactions;
         fs.writeFileSync("src\\reactionRoles.json", JSON.stringify(data));
-        console.log("updated json file");
     }
 });
 
@@ -54,40 +51,35 @@ client.on("interactionCreate", async (interaction) => {
     }
 });
 
-client.on("messageReactionAdd", (reaction, user) => {
-    //if(reaction.message.partial) reaction.fetch();
-    //if(reaction.partial) reaction.fetch();
-    if(user.bot) {
-        return;
-    }
+client.on("messageReactionAdd", (messageReaction, user) => {
+    if(user.bot) {return}
+    let reactionRoleConfig = JSON.parse(fs.readFileSync("src\\reactionRoles.json","utf8"));
+    let guild = messageReaction.message.guild;
+    let member = guild.members.cache.get(user.id);
+    
     for(let i = 0; i < reactionRoleConfig.reactions.length; i++) {
         let reactionRole = reactionRoleConfig.reactions[i];
-        console.log("add test");
-        if(reaction.message.id == reactionRole.message.id)
-        if(reaction.emoji.name == reactionRole.emote)
-        //if(!reaction.message.guild.members.cache.get(user.id).roles.cache.has((reactionRole.role).id)) {
-            reaction.message.guild.members.cache.get(user.id).roles.add(reactionRole.role);
-            console.log('Added role');
-        //}
+        if(messageReaction.message.id == reactionRole.message){
+            if(messageReaction.emoji.identifier == reactionRole.emote){
+                member.roles.add(reactionRole.role);
+            }
+        }
     }
 });
 
-client.on("messageReactionRemove", (reaction, user) => {
-    //if(reaction.message.partial) reaction.fetch();
-    //if(reaction.partial) reaction.fetch();
-    if(user.bot) {
-        return;
-    }
-    console.log("remove test");
+client.on("messageReactionRemove", (messageReaction, user) => {
+    if(user.bot) {return}
+    let reactionRoleConfig = JSON.parse(fs.readFileSync("src\\reactionRoles.json","utf8"));
+    let guild = messageReaction.message.guild;
+    let member = guild.members.cache.get(user.id);
+    
     for(let i = 0; i < reactionRoleConfig.reactions.length; i++) {
         let reactionRole = reactionRoleConfig.reactions[i];
-        console.log(reaction.message.id + " != " + reactionRole.message);
-        if(reaction.message.id == reactionRole.message.id)
-        if(reaction.emoji.name == reactionRole.emote)
-        //if(reaction.message.guild.members.cache.get(user.id).roles.cache.has((reactionRole.role).id)) {
-            reaction.message.guild.members.cache.get(user.id).roles.remove(reactionRole.role);
-            console.log('Removed role');
-        //}
+        if(messageReaction.message.id == reactionRole.message){
+            if(messageReaction.emoji.identifier == reactionRole.emote){
+                member.roles.remove(reactionRole.role);
+            }
+        }
     }
 });
 

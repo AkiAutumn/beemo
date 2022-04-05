@@ -1,7 +1,6 @@
 const {SlashCommandBuilder} = require("@discordjs/builders");
 const {MessageEmbed} = require("discord.js");
 const fs = require("fs");
-const reactionRoleConfig = JSON.parse(fs.readFileSync("src\\reactionRoles.json","utf8"));
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -12,6 +11,7 @@ module.exports = {
     ,
     async execute(interaction) {
         
+        let reactionRoleConfig = JSON.parse(fs.readFileSync("src\\reactionRoles.json","utf8"));
         let emote = interaction.options.getString("emote");
         let role = interaction.options.getRole("role");
         let channel = interaction.channel;
@@ -26,7 +26,7 @@ module.exports = {
         channel.send({ embeds: [embed] }).then(embedMessage => {
             embedMessage.react(emote);
 
-            let data = {message: embedMessage.id, emote: emote, role: role.id};
+            let data = {message: embedMessage.id, emote: emote.slice(2, -1), role: role.id};
             reactionRoleConfig.reactions.push(data);
             fs.writeFileSync("src\\reactionRoles.json", JSON.stringify(reactionRoleConfig));
         });
