@@ -88,5 +88,4 @@ client.once("ready", () => {
     console.log(`Logged in as ${client.user.tag} on ${client.guilds.cache.size} guild(s)`);
     client.user.setActivity({name: "a pillow fight", type: "COMPETING"});
 });
-
 client.login(process.env.DISCORD_TOKEN);
