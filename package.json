@@ -8,7 +8,7 @@
     "dev": "nodemon src/index.js",
     "deployCommands": "node src/deploy-commands.js"
   },
-  "author": "Aki",
+  "author": "Aki, kumø",
   "license": "ISC",
   "dependencies": {
     "@discordjs/builders": "^0.12.0",
