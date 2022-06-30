@@ -89,4 +89,4 @@ client.once("ready", () => {
     client.user.setActivity({name: "a pillow fight", type: "COMPETING"});
 });
 
-client.login(process.env.BOT_TOKEN);
+client.login(env.BOT_TOKEN);
