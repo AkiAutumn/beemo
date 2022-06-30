@@ -9,3 +9,4 @@ module.exports = {
         interaction.reply('**Pong! with a Delay of**\n ${ping}ms');
     }
 }
+}
