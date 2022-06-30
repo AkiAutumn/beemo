@@ -6,6 +6,6 @@ module.exports = {
         message.channel.send("Pinging...").then(m =>{
                         var ping = m.createdTimestamp - message.createdTimestamp;
                         var botPing = Math.round(bot.pi);
-        interaction.reply('Pong! with a Delay of ' + ${ping} + 'ms');
+        interaction.reply('**Pong! with a Delay of**\n ${ping}ms');
     }
 }
