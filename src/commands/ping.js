@@ -6,6 +6,6 @@ module.exports = {
         m => {   var ping = m.createdTimestamp - message.createdTimestamp;
                 var botPing = Math.round(bot.pi);
         interaction.reply('**Pong! with a Delay of**\n ${ping}ms');
-        });
+        };
     }
 }
