@@ -11,7 +11,7 @@ module.exports = {
     ,
     async execute(interaction) {
         
-        let reactionRoleConfig = JSON.parse(fs.readFileSync("src\\reactionRoles.json","utf8"));
+        let reactionRoleConfig = JSON.parse(fs.readFileSync("src/reactionRoles.json","utf8"));
         let emote = interaction.options.getString("emote");
         let role = interaction.options.getRole("role");
         let channel = interaction.channel;
@@ -28,7 +28,7 @@ module.exports = {
 
             let data = {message: embedMessage.id, emote: emote.slice(2, -1), role: role.id};
             reactionRoleConfig.reactions.push(data);
-            fs.writeFileSync("src\\reactionRoles.json", JSON.stringify(reactionRoleConfig));
+            fs.writeFileSync("src/reactionRoles.json", JSON.stringify(reactionRoleConfig));
         });
 
         interaction.reply({ content: 'Embed created!', ephemeral: true });
