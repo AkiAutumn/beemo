@@ -1,4 +1,6 @@
 require("dotenv").config();
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, '.env') })
 const {Client, Collection, Intents} = require("discord.js");
 const fs = require("fs");
 const client = new Client({
@@ -88,4 +90,4 @@ client.once("ready", () => {
     console.log(`Logged in as ${client.user.tag} on ${client.guilds.cache.size} guild(s)`);
     client.user.setActivity({name: "a pillow fight", type: "COMPETING"});
 });
-client.login(process.env.DISCORD_TOKEN);
+client.login(process.env.BOT_TOKEN);
