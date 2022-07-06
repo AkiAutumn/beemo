@@ -17,7 +17,7 @@ commandFiles.forEach(commandFile => {
 client.on('messageDelete', (message) => {
 
     let data = {reactions: []};
-    let reactionRoleConfig = JSON.parse(fs.readFileSync("src\\reactionRoles.json","utf8"));
+    let reactionRoleConfig = JSON.parse(fs.readFileSync("src/reactionRoles.json","utf8"));
     let reactions = reactionRoleConfig.reactions;
 
     if(reactions !== undefined){
@@ -29,7 +29,7 @@ client.on('messageDelete', (message) => {
         });
 
         data.reactions = reactions;
-        fs.writeFileSync("src\\reactionRoles.json", JSON.stringify(data));
+        fs.writeFileSync("src/reactionRoles.json", JSON.stringify(data));
     }
 });
 
@@ -54,7 +54,7 @@ client.on("interactionCreate", async (interaction) => {
 
 client.on("messageReactionAdd", (messageReaction, user) => {
     if(user.bot) {return}
-    let reactionRoleConfig = JSON.parse(fs.readFileSync("src\\reactionRoles.json","utf8"));
+    let reactionRoleConfig = JSON.parse(fs.readFileSync("src/reactionRoles.json","utf8"));
     let guild = messageReaction.message.guild;
     let member = guild.members.cache.get(user.id);
     
@@ -70,7 +70,7 @@ client.on("messageReactionAdd", (messageReaction, user) => {
 
 client.on("messageReactionRemove", (messageReaction, user) => {
     if(user.bot) {return}
-    let reactionRoleConfig = JSON.parse(fs.readFileSync("src\\reactionRoles.json","utf8"));
+    let reactionRoleConfig = JSON.parse(fs.readFileSync("src/reactionRoles.json","utf8"));
     let guild = messageReaction.message.guild;
     let member = guild.members.cache.get(user.id);
     
