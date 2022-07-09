@@ -86,7 +86,8 @@ client.on("messageReactionRemove", (messageReaction, user) => {
 
 
 client.once("ready", () => {
+    console.log("Ready!");
     console.log(`Logged in as ${client.user.tag} on ${client.guilds.cache.size} guild(s)`);
-    client.user.setActivity({name: "a pillow fight", type: "COMPETING"});
+    client.user.setActivity({name: "a pillow fight.", type: "COMPETING"});
 });
 client.login(process.env.BOT_TOKEN);
